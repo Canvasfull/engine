@@ -72,7 +72,7 @@ export class AnimationCache {
     protected _frames: AnimationFrame[] = [];
     protected _curIndex = -1;
     protected _isCompleted = false;
-    protected _frameCount = 0;
+    protected _maxFrameIdex = 0;
 
     constructor (data: spine.SkeletonData) {
         this._instance = new spine.SkeletonInstance();
@@ -102,8 +102,7 @@ export class AnimationCache {
             warn(`find no animation named ${animationName} !!!`);
             return;
         }
-        this._frameCount = Math.floor((animation as any).duration / FrameTime);
-        if(this._frameCount <= 0) this._frameCount = 1
+        this._maxFrameIdex = Math.floor((animation as any).duration / FrameTime);
         this._instance.setAnimation(0, animationName, false);
     }
 
@@ -114,18 +113,18 @@ export class AnimationCache {
             this._curIndex++;
             const model = this._instance.updateRenderData();
             this.updateRenderData(this._curIndex, model);
-            if (this._curIndex >= this._frameCount) {
+            if (this._curIndex >= this._maxFrameIdex) {
                 this._isCompleted = true;
             }
         }
     }
 
-    public getFrameCount() {
-        return this._frameCount;
+    public getMaxFrameIndex() {
+        return this._maxFrameIdex;
     }
         
     public getFrame (frameIdx: number) {
-        const index = frameIdx % this._frameCount;
+        const index = frameIdx % this._maxFrameIdex;
         return this._frames[index];
     }
 
